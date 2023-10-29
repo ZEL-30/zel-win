@@ -7,12 +7,21 @@ file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_LIST_DIR}/*.h)
 #  编译静态库
 add_library(${PROJECT_NAME} "")
 
+if(MSVC)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE _UNICODE )
+endif()
+
+
+
+
 target_sources(${PROJECT_NAME}
 PRIVATE
     ${SOURCES}
 PUBLIC
     ${HEADERS}
 )
+
+
 
 # 添加头文件
 target_include_directories(${PROJECT_NAME}

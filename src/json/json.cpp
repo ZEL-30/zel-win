@@ -283,8 +283,32 @@ bool Json::load(const std::string &filename) {
 }
 
 bool Json::save(const std::string &filename) {
-
+    // 打开文件
     std::ofstream fout(filename);
+    if (!fout.is_open()) {
+        // 递归创建文件夹
+        size_t pos = filename.find_last_of("/\\");
+        if (pos != std::string::npos) {
+            std::string dir = filename.substr(0, pos);
+            // 使用 _mkdir 创建目录
+            printf("dir: %s\n", dir.c_str());
+            int result = _mkdir(dir.c_str());
+            if (result != 0) {
+                return false; // 创建目录失败
+            }
+        }
+        // 再次尝试打开文件
+        fout.open(filename);
+        if (!fout.is_open()) {
+            return false; // 打开文件失败
+        }
+    }
+
+    // 将 JSON 数据写入文件
+    fout << str();
+    fout.close();
+
+    return true;
 
     if (fout.fail()) {
         // 递归创建文件夹
@@ -304,8 +328,6 @@ bool Json::save(const std::string &filename) {
 
     fout << str();
     fout.close();
-
-    return true;
 }
 
 bool Json::parse(const std::string &str) {
@@ -341,23 +363,17 @@ void Json::copy(const Json &other) {
         break;
 
     case JSON_STRING: {
-        auto temp = new std::string();
-        *temp     = *other.value_.string_;
-        std::swap(value_.string_, temp);
+        value_.string_ = new std::string(*other.value_.string_);
         break;
     }
 
     case JSON_ARRAY: {
-        auto temp = new std::vector<Json>();
-        *temp     = *other.value_.array_;
-        std::swap(value_.array_, temp);
+        value_.array_ = new std::vector<Json>(*other.value_.array_);
         break;
     }
 
     case JSON_OBJECT: {
-        auto temp = new std::map<std::string, Json>();
-        *temp     = *other.value_.object_;
-        std::swap(value_.object_, temp);
+        value_.object_ = new std::map<std::string, Json>(*other.value_.object_);
         break;
     }
 

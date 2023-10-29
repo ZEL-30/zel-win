@@ -47,5 +47,9 @@ PUBLIC
     zel-win
 )
 
-
+add_executable(test-filesystem test_filesystem.cpp)
+target_link_libraries(test-filesystem
+PUBLIC
+    zel-win
+)
 

@@ -72,13 +72,14 @@ void testParser() {
         printf("load json file failed\n");
     }
 
-    std::string filename = "../config/test_json.json";
+    std::string filename = "../config/a/b/c/test_json.json";
     cout << json["data"].str() << endl;
     json.remove("data");
     cout << json.str() << endl;
 
     json.save(filename);
     json["data"] = "test";
+    json["data1"] = "hahaha";
     json.save(filename);
 
     printf("paser success\n");
