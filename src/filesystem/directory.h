@@ -27,6 +27,7 @@ class Directory {
     /// @brief 重命名目录(含子目录)
     /// @param dest 目标目录路径
     bool rename(const std::string &dest);
+    bool rename(const wchar_t *dest);
 
     /// @brief 移动目录(含子目录)
     /// @param dest 目标目录路径

@@ -24,6 +24,7 @@ class File {
     /// @brief 重命名文件
     /// @param dest 目标文件路径
     bool rename(const std::string &dest_filename);
+    bool rename(const wchar_t *dest_filename);
 
     /// @brief 移动文件
     /// @param dest 目标文件路径

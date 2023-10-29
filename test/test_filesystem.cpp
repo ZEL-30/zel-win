@@ -30,10 +30,13 @@ int main() {
     // 删除文件
     file2.remove();
 
-    // 重命名文件
-    if (!file.rename("勇士队.txt")) {
-        std::cout << "重命名失败" << std::endl;
-    }
+    // // 重命名文件
+    // std::string name = "勇士队.txt";
+    // if (!file.rename(L"勇士队.txt")) {
+    //     std::cout << "重命名失败" << std::endl;
+    // }
+
+    
 
     return 0;
 }

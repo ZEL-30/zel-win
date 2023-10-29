@@ -1,5 +1,6 @@
 #include "file.h"
 #include "directory.h"
+#include "utility/string.h"
 
 #include <ctime>
 #include <fstream>
@@ -62,6 +63,8 @@ bool File::rename(const std::string &dest_filename) {
     std::string dest = dir() + "/" + dest_filename;
     return move(dest);
 }
+
+bool File::rename(const wchar_t *dest_filename) { return rename(utility::String::wchar2char(dest_filename)); }
 
 bool File::move(const std::string &dest) {
     if (!exists()) {

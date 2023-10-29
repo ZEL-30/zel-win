@@ -1,13 +1,16 @@
 #include "directory.h"
+#include "utility/string.h"
 
-#include <windows.h>
 #include <direct.h>
+#include <windows.h>
 
 namespace zel {
 namespace filesystem {
 
-Directory::Directory(const std::string &path)
-    : path_(path) {}
+Directory::Directory(const std::string &path) {
+    auto temp = utility::String::char2wchar(path.c_str());
+    path_     = utility::String::wchar2char(temp);
+}
 
 Directory::~Directory() {}
 
@@ -38,7 +41,7 @@ void Directory::remove() {
     for (auto &file : files) {
         file.remove();
     }
-    _rmdir(path_.c_str()); 
+    _rmdir(path_.c_str());
 }
 
 bool Directory::copy(const std::string &dest) const {
@@ -79,6 +82,8 @@ bool Directory::rename(const std::string &dest) {
     return true;
 }
 
+bool Directory::rename(const wchar_t *dest) { return rename(utility::String::wchar2char(dest)); }
+
 bool Directory::move(const std::string &dest) {
     if (!exists()) {
         return false;
@@ -102,7 +107,7 @@ bool Directory::exists() const {
 
     DWORD dwAttrib = GetFileAttributes(path_.c_str());
 
-    return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)); 
+    return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }
 
 void Directory::clear() {
