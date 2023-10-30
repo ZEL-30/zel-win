@@ -16,22 +16,23 @@ File::File(const std::string &path)
 
 File::~File() {}
 
-void File::create() {
+bool File::create() {
     if (exists()) {
-        return;
+        return true;
     }
-    std::string::size_type pos = path_.find_last_of('/');
-    if (pos == std::string::npos) {
-        return;
+
+    if (dir().empty()) {
+        return false;
     }
-    std::string dir = path_.substr(0, pos);
-    if (dir.empty()) {
-        return;
-    }
-    Directory d(dir);
+
+    Directory d(dir());
     d.create();
-    std::ofstream out(path_);
+    std::ofstream out("../test/a/b/哈哈/勇士.txt");
+    if (!out) {
+        return false;
+    }
     out.close();
+    return true;
 }
 
 void File::remove() {
@@ -63,8 +64,6 @@ bool File::rename(const std::string &dest_filename) {
     std::string dest = dir() + "/" + dest_filename;
     return move(dest);
 }
-
-bool File::rename(const wchar_t *dest_filename) { return rename(utility::String::wchar2char(dest_filename)); }
 
 bool File::move(const std::string &dest) {
     if (!exists()) {

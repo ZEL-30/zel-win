@@ -12,10 +12,9 @@ class String {
     String();
     ~String();
 
-    static char *wchar2char(const wchar_t *wchar);
+    static std::wstring string2wstring(const std::string &wstr);
 
-    static wchar_t *char2wchar(const char* str);
-
+    static std::string wstring2string(const std::wstring &str);
 
   private:
 };

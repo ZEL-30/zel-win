@@ -15,7 +15,7 @@ class Directory {
     ~Directory();
 
     /// @brief 创建一个空目录(含子目录)
-    void create();
+    bool create();
 
     /// @brief 删除目录(含子目录)
     void remove();
@@ -27,7 +27,6 @@ class Directory {
     /// @brief 重命名目录(含子目录)
     /// @param dest 目标目录路径
     bool rename(const std::string &dest);
-    bool rename(const wchar_t *dest);
 
     /// @brief 移动目录(含子目录)
     /// @param dest 目标目录路径
@@ -61,6 +60,7 @@ class Directory {
 
   private:
     std::string                        path_;  // 目录路径
+    std::wstring                       wpath_; // 目录路径
     std::vector<zel::filesystem::File> files_; // 目录下全部文件
     int                                count_; // 目录下文件数量
     int                                line_;  // 目录下文件行数

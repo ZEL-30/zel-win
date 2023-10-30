@@ -1,36 +1,44 @@
 #include "directory.h"
 #include "utility/string.h"
 
-#include <direct.h>
+#include <iostream>
+#include <locale>
+#include <string>
 #include <windows.h>
 
 namespace zel {
 namespace filesystem {
 
-Directory::Directory(const std::string &path) {
-    auto temp = utility::String::char2wchar(path.c_str());
-    path_     = utility::String::wchar2char(temp);
+Directory::Directory(const std::string &path)
+    : path_(path) {
+    wpath_ = utility::String::string2wstring(path_).c_str();
 }
 
 Directory::~Directory() {}
 
 std::string Directory::path() const { return path_; }
 
-void Directory::create() {
+bool Directory::create() {
     if (exists()) {
-        return;
+        return true;
     }
+
     std::string::size_type pos = path_.find_last_of('/');
     if (pos == std::string::npos) {
-        return;
+        return false;
     }
     std::string dir = path_.substr(0, pos);
+
     if (dir.empty()) {
-        return;
+        return false;
     }
     Directory d(dir);
     d.create();
-    _mkdir(path_.c_str());
+    if (CreateDirectoryW(wpath_.c_str(), NULL) != 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void Directory::remove() {
@@ -41,7 +49,7 @@ void Directory::remove() {
     for (auto &file : files) {
         file.remove();
     }
-    _rmdir(path_.c_str());
+    RemoveDirectoryW(wpath_.c_str());
 }
 
 bool Directory::copy(const std::string &dest) const {
@@ -81,8 +89,6 @@ bool Directory::rename(const std::string &dest) {
     }
     return true;
 }
-
-bool Directory::rename(const wchar_t *dest) { return rename(utility::String::wchar2char(dest)); }
 
 bool Directory::move(const std::string &dest) {
     if (!exists()) {

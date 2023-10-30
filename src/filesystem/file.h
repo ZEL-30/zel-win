@@ -11,8 +11,8 @@ class File {
     File(const std::string &path);
     ~File();
 
-    /// @brief 创建文件
-    void create();
+    /// @brief 创建一个空文件
+    bool create();
 
     /// @brief 删除文件
     void remove();
@@ -24,7 +24,6 @@ class File {
     /// @brief 重命名文件
     /// @param dest 目标文件路径
     bool rename(const std::string &dest_filename);
-    bool rename(const wchar_t *dest_filename);
 
     /// @brief 移动文件
     /// @param dest 目标文件路径
