@@ -45,8 +45,11 @@ void Directory::remove() {
     if (!exists()) {
         return;
     }
+
     std::vector<File> files = this->files(true);
+
     for (auto &file : files) {
+        printf("file: %s\n", file.name().c_str());
         file.remove();
     }
     RemoveDirectoryW(wpath_.c_str());

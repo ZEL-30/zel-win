@@ -5,6 +5,7 @@
 #include <ctime>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <windows.h>
 
@@ -12,7 +13,9 @@ namespace zel {
 namespace filesystem {
 
 File::File(const std::string &path)
-    : path_(path) {}
+    : path_(path) {
+    wpath_ = utility::String::string2wstring(path);
+}
 
 File::~File() {}
 
@@ -27,7 +30,7 @@ bool File::create() {
 
     Directory d(dir());
     d.create();
-    std::ofstream out("../test/a/b/哈哈/勇士.txt");
+    std::ofstream out(wpath_);
     if (!out) {
         return false;
     }
@@ -39,24 +42,28 @@ void File::remove() {
     if (!exists()) {
         return;
     }
-    std::remove(path_.c_str());
+
+    DeleteFileW(wpath_.c_str());
 }
 
 bool File::copy(const std::string &dest) const {
+
     if (!exists()) {
         return false;
     }
-    std::ifstream in(path_);
+    std::ifstream in(wpath_);
     if (!in) {
         return false;
     }
-    std::ofstream out(dest);
-    if (!out) {
-        return false;
-    }
-    out << in.rdbuf();
+
+    File file(dest);
+    if (!file.create()) return false;
+
+    std::stringstream buffer;
+    buffer << in.rdbuf();
+    file.write(buffer.str());
     in.close();
-    out.close();
+
     return true;
 }
 
@@ -76,15 +83,17 @@ bool File::move(const std::string &dest) {
         remove();
         return true;
     }
+
     return false;
 }
 
 bool File::exists() const {
-    std::ifstream in(path_);
+    std::ifstream in(wpath_);
     if (!in) {
         return false;
     }
     in.close();
+
     return true;
 }
 
@@ -92,7 +101,7 @@ void File::clear() {
     if (!exists()) {
         return;
     }
-    std::ofstream out(path_);
+    std::ofstream out(wpath_);
     out.close();
 }
 
@@ -100,7 +109,7 @@ std::string File::read() const {
     if (!exists()) {
         return "";
     }
-    std::ifstream in(path_);
+    std::ifstream in(wpath_);
     if (!in) {
         return "";
     }
@@ -117,7 +126,7 @@ void File::write(const std::string &content) {
     if (!exists()) {
         return;
     }
-    std::ofstream out(path_);
+    std::ofstream out(wpath_);
     if (!out) {
         return;
     }
@@ -156,7 +165,7 @@ int File::line() const {
     if (!exists()) {
         return 0;
     }
-    std::ifstream in(path_);
+    std::ifstream in(wpath_);
     if (!in) {
         return 0;
     }
