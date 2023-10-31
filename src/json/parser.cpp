@@ -9,9 +9,8 @@
 
 #include "json.h"
 
-#include <fstream>
-#include <sstream>
 #include <stdexcept>
+#include <string.h>
 
 namespace zel {
 namespace json {
@@ -22,18 +21,6 @@ Parser::Parser()
 
 Parser::~Parser() {}
 
-bool Parser::loadFile(const std::string &filename) {
-    std::ifstream fin(filename);
-    if (fin.fail()) return false;
-
-    std::stringstream ss;
-    ss << fin.rdbuf();
-    str_   = ss.str();
-    index_ = 0;
-
-    return true;
-}
-
 bool Parser::loadString(const std::string &str) {
     str_   = str;
     index_ = 0;
@@ -43,9 +30,8 @@ bool Parser::loadString(const std::string &str) {
 
 Json Parser::parse() {
     char ch = getNextChar();
-
+    printf("per = %c ch = %c next = %c index = %d\n", str_[index_ - 1], ch, str_[index_ + 1], index_);
     switch (ch) {
-
     case 'n':
         return parseNull();
 
@@ -118,38 +104,47 @@ Json Parser::parseBool() {
 }
 
 Json Parser::parseNumber() {
-
     index_--;
-
-    int pos = index_;
+    size_t pos = index_;
 
     if (str_[index_] == '-') index_++;
 
-    if (str_[index_] < '0' || str_[index_] > '9') throw std::logic_error("parse number error");
-
-    while (str_[index_] >= '0' && str_[index_] <= '9') {
+    // integer part
+    if (str_[index_] == '0') {
         index_++;
+        if (inRange(str_[index_], '0', '9')) {
+            throw std::logic_error("leading 0s not permitted in numbers");
+        }
+    } else if (inRange(str_[index_], '1', '9')) {
+        index_++;
+        while (inRange(str_[index_], '0', '9')) {
+            index_++;
+        }
+    } else {
+        throw std::logic_error("invalid character in number");
     }
 
-    // 120
     if (str_[index_] != '.') {
-        return Json(std::stoi(str_.substr(pos, index_ - pos)));
+        return std::atoi(str_.c_str() + pos);
     }
 
-    index_++;
-
-    if (str_[index_] < '0' || str_[index_] > '9') throw std::logic_error("parse number error");
-
-    while (str_[index_] >= '0' && str_[index_] <= '9') {
+    // decimal part
+    if (str_[index_] == '.') {
         index_++;
+        if (!inRange(str_[index_], '0', '9')) {
+            throw std::logic_error("at least one digit required in fractional part");
+        }
+        while (inRange(str_[index_], '0', '9')) {
+            index_++;
+        }
     }
 
-    return Json(std::stof(str_.substr(pos, index_ - pos)));
+    return std::atof(str_.c_str() + pos);
 }
 
 std::string Parser::parseString() {
 
-    std::string out;
+    std::string out = "";
 
     char ch;
     while (true) {
@@ -255,6 +250,7 @@ Json Parser::parseObject() {
 
         // value
         object[key] = parse();
+
 
         // }
         ch = getNextChar();

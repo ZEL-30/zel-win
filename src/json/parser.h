@@ -14,21 +14,20 @@ class Parser {
     ~Parser();
 
     bool loadString(const std::string &str);
-    bool loadFile(const std::string &filename);
 
     Json parse();
 
   private:
-    void skipWhiteSpace();
-
-    char getNextChar();
-
     Json        parseNull();
     Json        parseBool();
     Json        parseNumber();
     std::string parseString();
     Json        parseArray();
     Json        parseObject();
+
+    void skipWhiteSpace();
+    bool inRange(long x, long lower, long upper) { return (x >= lower && x <= upper); }
+    char getNextChar();
 
   private:
     std::string str_;   // json buffer

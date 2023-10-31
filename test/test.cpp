@@ -20,6 +20,7 @@ int main() {
 
     std::ofstream out;
     out.open(path);
+
     out.close();
 
     return 0;

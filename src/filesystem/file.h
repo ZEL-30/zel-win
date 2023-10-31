@@ -40,7 +40,7 @@ class File {
 
     /// @brief 一次性写入文件
     /// @param content 写入内容
-    void write(const std::string &content);
+    bool write(const std::string &content);
 
     /// @brief 获取文件名
     std::string name() const;

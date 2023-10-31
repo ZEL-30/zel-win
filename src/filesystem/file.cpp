@@ -122,16 +122,18 @@ std::string File::read() const {
     return content;
 }
 
-void File::write(const std::string &content) {
+bool File::write(const std::string &content) {
     if (!exists()) {
-        return;
+        return false;
     }
     std::ofstream out(wpath_);
     if (!out) {
-        return;
+        return false;
     }
     out << content;
     out.close();
+
+    return true;
 }
 
 std::string File::name() const {

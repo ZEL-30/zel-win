@@ -6,7 +6,7 @@
 /// @copyright Copyright (c) 2023 ZEL
 
 #include "json.h"
-
+#include "filesystem/file.h"
 #include "parser.h"
 
 #include <algorithm>
@@ -213,13 +213,9 @@ void Json::set(const std::string &value) {
 }
 
 void Json::append(const Json &other) {
-    if (type_ == JSON_NULL) {
+    if (type_ != JSON_ARRAY) {
         type_         = JSON_ARRAY;
         value_.array_ = new std::vector<Json>();
-    }
-
-    if (type_ != JSON_ARRAY) {
-        throw std::logic_error("function Json::append requires array value");
     }
 
     value_.array_->push_back(other);
@@ -269,8 +265,13 @@ void Json::remove(std::string &key) {
 }
 
 bool Json::load(const std::string &filename) {
+
+    filesystem::File file(filename);
+    if (!file.exists()) return false;
+    std::string str = file.read();
+
     Parser parser;
-    if (!parser.loadFile(filename)) return false;
+    if (!parser.loadString(str)) return false;
 
     try {
         *this = parser.parse();
@@ -283,51 +284,14 @@ bool Json::load(const std::string &filename) {
 }
 
 bool Json::save(const std::string &filename) {
-    // 打开文件
-    std::ofstream fout(filename);
-    if (!fout.is_open()) {
-        // 递归创建文件夹
-        size_t pos = filename.find_last_of("/\\");
-        if (pos != std::string::npos) {
-            std::string dir = filename.substr(0, pos);
-            // 使用 _mkdir 创建目录
-            printf("dir: %s\n", dir.c_str());
-            int result = _mkdir(dir.c_str());
-            if (result != 0) {
-                return false; // 创建目录失败
-            }
-        }
-        // 再次尝试打开文件
-        fout.open(filename);
-        if (!fout.is_open()) {
-            return false; // 打开文件失败
-        }
+    filesystem::File file(filename);
+    if (!file.exists()) {
+        if (!file.create()) return false;
     }
 
-    // 将 JSON 数据写入文件
-    fout << str();
-    fout.close();
+    std::string str = this->str();
 
-    return true;
-
-    if (fout.fail()) {
-        // 递归创建文件夹
-        std::string path = filename;
-        std::replace(path.begin(), path.end(), '\\', '/');
-        std::string::size_type pos = path.find_first_of('/');
-        while (pos != std::string::npos) {
-            std::string dir = path.substr(0, pos);
-
-            fout.open(path);
-            if (fout.good()) break;
-            _mkdir(dir.c_str());
-
-            pos = path.find_first_of('/', pos + 1);
-        }
-    }
-
-    fout << str();
-    fout.close();
+    return file.write(str);
 }
 
 bool Json::parse(const std::string &str) {
