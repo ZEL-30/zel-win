@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include <filesystem/file.h>
 #include <filesystem/directory.h>
+#include <filesystem/file.h>
 using namespace zel::filesystem;
 
 int main() {
@@ -43,10 +43,28 @@ int main() {
         std::cout << "重命名失败" << std::endl;
     }
 
-    Directory dir("../test/a/b/哈哈");
-    std::vector<File> files = dir.files();
-    for (auto file: files) {
-        printf("file: %s\n", file.name().c_str());
+    Directory dir("../test/a/b/c");
+    std::cout << "目录路径: " << dir.path() << std::endl;
+    dir.cd("..");
+    std::cout << "目录路径: " << dir.path() << std::endl;
+    dir.cd("./c/测试");
+    std::cout << "目录路径: " << dir.path() << std::endl;
+
+    std::string dir2 = "./../test/a/b/c/测试/";
+    for (int i = 0; i < 10; i++) {
+        std::string path = dir2 + std::to_string(i) + ".txt";
+        File        file(path);
+        file.create();
+        file.write("勇士总冠军\n");
+    }
+
+    auto files = dir.files();
+    for (auto file : files) {
+        std::cout << file.name() << std::endl;
+    }
+
+    if (!dir.copy("D:/Workspaces/C++/Visual Studio Code/zel-win/test/a/b/")) {
+        std::cout << "复制失败" << std::endl;
     }
 
     return 0;

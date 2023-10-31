@@ -63,11 +63,6 @@ class File {
   private:
     std::string  path_; // 文件路径
     std::wstring wpath_;
-    std::string  name_; // 文件名
-    std::string  dir_;  // 文件所在目录
-    std::string  time_; // 文件最后修改时间
-    int          line_; // 文件行数
-    int          size_; // 文件大小
 };
 } // namespace filesystem
 } // namespace zel
