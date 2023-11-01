@@ -24,9 +24,7 @@ class Directory {
     /// @param path 目标目录路径
     bool cd(const std::string &path);
 
- 
-
-    /// @brief 复制目录(含子目录)
+     /// @brief 复制目录(含子目录)
     /// @param dest 目标目录路径
     bool copy(const std::string &dest) const;
 
@@ -50,7 +48,7 @@ class Directory {
     /// @brief 获取目录(包含子目录)下全部文件
     /// @param recursive 是否递归
     /// @param full_path 是否返回全路径
-    std::vector<zel::filesystem::File> files(bool recursive = false, bool full_path = false) const;
+    std::vector<File> files(bool recursive = false, bool full_path = false) const;
 
     /// @brief 获取目录(包含子目录)下全部文件夹
     /// @param recursive 是否递归

@@ -1,6 +1,6 @@
 #include "file.h"
 #include "directory.h"
-#include "utility/string.h"
+#include "../utility/string.h"
 
 #include <ctime>
 #include <fstream>

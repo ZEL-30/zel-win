@@ -6,7 +6,7 @@
 /// @copyright Copyright (c) 2023 ZEL
 
 #include "json.h"
-#include "filesystem/file.h"
+#include "../filesystem/file.h"
 #include "parser.h"
 
 #include <algorithm>

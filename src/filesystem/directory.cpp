@@ -1,5 +1,5 @@
 #include "directory.h"
-#include "utility/string.h"
+#include "../utility/string.h"
 
 #include <iostream>
 #include <locale>
