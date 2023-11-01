@@ -30,7 +30,6 @@ bool Parser::loadString(const std::string &str) {
 
 Json Parser::parse() {
     char ch = getNextChar();
-    printf("per = %c ch = %c next = %c index = %d\n", str_[index_ - 1], ch, str_[index_ + 1], index_);
     switch (ch) {
     case 'n':
         return parseNull();
@@ -250,7 +249,6 @@ Json Parser::parseObject() {
 
         // value
         object[key] = parse();
-
 
         // }
         ch = getNextChar();

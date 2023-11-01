@@ -1,5 +1,5 @@
-#include <interpreter/parser.h>
-#include <interpreter/value.h>
+#include <parser/parser.h>
+#include <parser/value.h>
 using namespace script::interpreter;
 
 #include <fstream>
