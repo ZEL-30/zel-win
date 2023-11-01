@@ -14,13 +14,9 @@ class Parser {
     Parser();
     ~Parser();
 
-    /// @brief 加载文件
-    /// @param file 文件名
-    bool loadFile(const std::string& filename);
-
     /// @brief 加载字符串
     /// @param str 待加载的字符串
-    bool loadString(const std::string& str);
+    bool load(const std::string &str);
 
     /// @brief 解析XML文件
     /// @return Xml XML根节点
@@ -57,8 +53,8 @@ class Parser {
     std::string parseElementAttrValue();
 
   private:
-    std::string str_; // xml buffer
-    int index_;       // 下标
+    std::string str_;   // xml buffer
+    int         index_; // 下标
 };
 
 } // namespace xml

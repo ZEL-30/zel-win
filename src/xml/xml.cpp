@@ -7,6 +7,7 @@
 
 #include "xml.h"
 
+#include "../filesystem/file.h"
 #include "parser.h"
 
 #include <algorithm>
@@ -217,46 +218,27 @@ void Xml::remove(const std::string &name) {
 }
 
 bool Xml::load(const std::string &filename) {
-    Parser parser;
-    if (!parser.loadFile(filename)) return false;
+    filesystem::File file(filename);
+    if (!file.exists()) {
+        return false;
+    }
 
-    *this = parser.parse();
-    return true;
+    return parse(file.read());
 }
 
 bool Xml::save(const std::string &filename) {
-
-    std::ofstream fout(filename);
-
-    if (fout.fail()) {
-        // 递归创建文件夹
-        std::string path = filename;
-        std::replace(path.begin(), path.end(), '\\', '/');
-        std::string::size_type pos = path.find_first_of('/');
-        while (pos != std::string::npos) {
-            std::string dir = path.substr(0, pos);
-
-            fout.open(path);
-            if (fout.good()) break;
-            _mkdir(dir.c_str());
-
-            pos = path.find_first_of('/', pos + 1);
-        }
+    filesystem::File file(filename);
+    if (!file.exists()) {
+        file.create();
     }
 
-    fout.open(filename);
-    if (fout.fail()) {
-        return false;
-    }
-    fout << str();
-    fout.close();
-
+    file.write(str());
     return true;
 }
 
 bool Xml::parse(const std::string &str) {
     Parser parser;
-    if (!parser.loadString(str)) return false;
+    if (!parser.load(str)) return false;
 
     *this = parser.parse();
 

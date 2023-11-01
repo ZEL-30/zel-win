@@ -6,6 +6,7 @@
 /// @copyright Copyright (c) 2023 ZEL
 
 #include "ini_file.h"
+#include "filesystem/file.h"
 
 #include <fstream>
 #include <iostream>
@@ -66,13 +67,12 @@ std::string IniFile::str() {
 }
 
 bool IniFile::save(const std::string &filename) {
-    std::ofstream fout(filename);
+    filesystem::File file(filename);
+    if (!file.exists()) {
+        file.create();
+    }
 
-    if (fout.fail()) return false;
-
-    fout << str();
-    fout.close();
-
+    file.write(str());
     return true;
 }
 

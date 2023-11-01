@@ -43,7 +43,7 @@ void testParser() {
     int id = root[0].attr("name");
     cout << root[0].name() << id << endl;
 
-    root.save("../config/temp.xml");
+    root.save("../config/测试/temp.xml");
 }
 
 int main() {
